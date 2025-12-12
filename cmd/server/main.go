@@ -8,6 +8,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+const httpPort = ":3000"
+
 func main() {
 	r := chi.NewRouter()     // роутер обрабатывет наши адреса
 	r.Use(middleware.Logger) // мидлваре - для всех эндпоинтов
@@ -18,7 +20,7 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	})
-	err := http.ListenAndServe(":3000", r)
+	err := http.ListenAndServe(httpPort, r)
 	if err != nil {
 		panic(err)
 	}
