@@ -17,7 +17,12 @@ const httpPort = ":3000"
 func main() {
 	r := chi.NewRouter()     // роутер обрабатывет наши адреса
 	r.Use(middleware.Logger) // мидлваре - для всех эндпоинтов
-	r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
+
+	r.Get("/{city}", func(w http.ResponseWriter, r *http.Request) {
+		city := chi.URLParam(r, "city")
+
+		fmt.Println("Request city:", city)
+
 		_, err := w.Write([]byte("welcome"))
 		if err != nil {
 			log.Println(err)
