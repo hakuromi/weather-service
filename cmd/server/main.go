@@ -11,7 +11,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-co-op/gocron/v2"
-	"github.com/hakuromi/weather-service/http/sideApi"
+	"github.com/hakuromi/weather-service/http/geocoding"
+	"github.com/hakuromi/weather-service/http/openmeteo"
 )
 
 const httpPort = ":3000"
@@ -25,22 +26,33 @@ func main() {
 
 		fmt.Println("Requested city:", city)
 
-		geoResponse, err := sideApi.GetCoords(city)
+		geoResponse, err := geocoding.GetCoords(city) // получаем координаты
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
-		raw, err := json.Marshal(geoResponse)
+		// получаем температуру по ранее полученным координатам
+		openMeteoResponse, err := openmeteo.GetTemp(geoResponse.Latitude, geoResponse.Longitude)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		raw, err := json.Marshal(openMeteoResponse)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		_, err = w.Write(raw)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	})
 
