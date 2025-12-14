@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-co-op/gocron/v2"
+	"github.com/hakuromi/weather-service/http/sideApi"
 )
 
 const httpPort = ":3000"
@@ -17,8 +19,25 @@ const httpPort = ":3000"
 func main() {
 	r := chi.NewRouter()     // роутер обрабатывет наши адреса
 	r.Use(middleware.Logger) // мидлваре - для всех эндпоинтов
-	r.Get("/get", func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write([]byte("welcome"))
+
+	r.Get("/{city}", func(w http.ResponseWriter, r *http.Request) {
+		city := chi.URLParam(r, "city")
+
+		fmt.Println("Requested city:", city)
+
+		geoResponse, err := sideApi.GetCoords(city)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
+		raw, err := json.Marshal(geoResponse)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
+		_, err = w.Write(raw)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
