@@ -1,4 +1,4 @@
-package sideApi
+package geocoding
 
 import (
 	"encoding/json"
@@ -30,14 +30,14 @@ import (
 }
 */
 
-type Response struct { //
+type Response struct {
 	Name      string  `json:"name"`
 	Country   string  `json:"country"`
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
 }
 
-var geoResponse struct {
+type geoResponse struct {
 	Results []Response `json:"results"`
 }
 
@@ -47,18 +47,25 @@ func GetCoords(city string) (Response, error) {
 	}
 
 	response, err := newHttpClient.Get( // get request for take coords of a city
-		fmt.Sprintf("https://geocoding-api.open-meteo.com/v1/search?name=%s&count=1&language=ru&format=json", city),
+		fmt.Sprintf("https://geocoding-api.open-meteo.com/v1/search?name=%s&count=1&language=ru&format=json",
+			city),
 	)
-
 	if err != nil { // check success get request
 		return Response{}, err
 	}
+
+	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK { // check response status code
 		return Response{}, fmt.Errorf("status code %d", response.StatusCode)
 	}
 
-	json.NewDecoder(response.Body).Decode(&geoResponse)
+	var georesp geoResponse // создаем экземпляр структуры georesponse
 
-	return geoResponse.Results[0], nil // берем первый элемент слайса структур
+	err = json.NewDecoder(response.Body).Decode(&georesp)
+	if err != nil {
+		return Response{}, err
+	}
+
+	return georesp.Results[0], nil // берем первый элемент слайса структур
 }
