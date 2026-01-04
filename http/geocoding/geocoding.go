@@ -1,4 +1,4 @@
-package geocoding
+package geocoding // отвечает за получение координат
 
 import (
 	"encoding/json"

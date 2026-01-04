@@ -1,4 +1,4 @@
-package openmeteo
+package openmeteo // отвечает за получение температуры по координатам
 
 import (
 	"encoding/json"
