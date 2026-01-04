@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/hakuromi/weather-service/http/handlers"
+	"github.com/hakuromi/weather-service/handlers"
 )
 
 const (
 	httpPort = ":3000"
-	city     = "moscow"
 )
 
 func main() {

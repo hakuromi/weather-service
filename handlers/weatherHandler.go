@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/hakuromi/weather-service/http/geocoding"
-	"github.com/hakuromi/weather-service/http/openmeteo"
+	"github.com/hakuromi/weather-service/sideAPI/geocoding"
+	"github.com/hakuromi/weather-service/sideAPI/openmeteo"
 )
 
 var (
