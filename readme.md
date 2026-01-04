@@ -1,4 +1,4 @@
-# Weather Service
+## Weather Service
 
 Простой HTTP-сервис для получения и хранения данных о погоде.
 
@@ -55,8 +55,9 @@ GET /moscow
 ### Структура проекта
 
 ```
-cmd/server/     - основной файл приложения
-http/
-  geocoding/    - работа с геокодинг API
-  openmeteo/    - работа с погодным API
+cmd/server/     - запуск сервера
+handlers/       - обработка запросов и ответов
+sideAPI/
+  geocoding/    - получение координат
+  openmeteo/    - получение температуры
 ```
